@@ -1,0 +1,57 @@
+<#
+.EXAMPLE
+$FilterCondition = [FilterCondition]::new("primaryAssetIdentifier",'eq','DUMMY')
+$Filter = [Filter]::new("and", $FilterCondition)
+$OrderBy = [OrderBy]::new("primaryAssetIdentifier", "asc")
+$Operation = [Operation]::new(1, 10, $Filter, $OrderBy, $null)
+
+Find-DossierObject -AccessToken $Env:DOSSIER_ACCESS_TOKEN -Environment Produciton -Path 'Assets/Assets' -Operation $Operation
+#>
+
+function Find-DossierObject {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string]$AccessToken,
+
+        [Parameter(Mandatory)]
+        [ValidateSet('Staging','Production')]
+        [string]$Environment,
+
+        [Parameter(Mandatory)]
+        [string]$Path,
+
+        [Operation]$Operation
+    )
+    
+    begin {
+        $Headers = @{
+            Authorization = "Bearer $AccessToken"
+            Accept = 'application/json'
+        }
+        $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
+        Write-Debug "BaseId: $BaseId"
+    }
+    
+    process {
+
+        $Uri = if ($Operation) {
+            # Write-Debug ($Operation | ConvertTo-Json -Depth 5)
+            $O = $Operation | ConvertTo-Json -Depth 5 | ConvertTo-Base64
+
+            '{0}/{1}/{2}?operation={3}' -f $BaseId, $Path, $Id, $O
+        }
+        else {
+            '{0}/{1}/{2}' -f $BaseId, $Id
+        }
+        
+        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers
+        if ($Response.Content) {
+            $Response.Content | ConvertFrom-Json
+        }
+    }
+    
+    end {}
+
+}
