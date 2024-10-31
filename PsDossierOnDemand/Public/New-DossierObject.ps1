@@ -24,6 +24,8 @@ function New-DossierObject {
         }
 
         $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
+        $Uri = '{0}/{1}/Create' -f $BaseId, $Path
+        Write-Debug "Uri: $Uri"
     }
     
     process {
@@ -31,8 +33,6 @@ function New-DossierObject {
         Write-Verbose "New-DossierObject($Path)"
 
         $Body = $Data | ConvertTo-Json -Depth 5
-
-        $Uri = '{0}/{1}' -f $BaseId, $Path
 
         if ($PSCmdlet.ShouldProcess($Path, "POST")) {
 
