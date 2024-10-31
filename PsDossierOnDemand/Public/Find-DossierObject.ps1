@@ -36,6 +36,8 @@ function Find-DossierObject {
     
     process {
 
+        Write-Verbose "Find-DossierObject($Path)"
+
         $Uri = if ($Operation) {
             # Write-Debug ($Operation | ConvertTo-Json -Depth 5)
             $O = $Operation | ConvertTo-Json -Depth 5 | ConvertTo-Base64
@@ -43,10 +45,11 @@ function Find-DossierObject {
             '{0}/{1}/{2}?operation={3}' -f $BaseId, $Path, $Id, $O
         }
         else {
-            '{0}/{1}/{2}' -f $BaseId, $Id
+            '{0}/{1}' -f $BaseId, $Path
         }
         
-        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers
+        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers -Verbose:$false
+
         if ($Response.Content) {
             $Response.Content | ConvertFrom-Json
         }
