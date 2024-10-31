@@ -24,9 +24,13 @@ function Get-DossierObject {
     }
     
     process {
+
+        Write-Verbose "Get-DossierObject($Path/$Id)"
+
         $Uri = '{0}/{1}/{2}' -f $BaseId, $Path, $Id
 
-        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers
+        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers -Verbose:$false
+
         if ($Response.Content) {
             $Response.Content | ConvertFrom-Json
         }
