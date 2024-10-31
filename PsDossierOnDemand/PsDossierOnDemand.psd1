@@ -12,7 +12,7 @@
 RootModule = 'PsDossierOnDemand.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.0'
+ModuleVersion = '0.1.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -72,7 +72,7 @@ ScriptsToProcess = @('Classes.ps1')
 FunctionsToExport = @(
     'ConvertTo-Base64','ConvertFrom-Base64'
     'New-DossierSession'
-    'Find-DossierObject','Get-DossierObject','Set-DossierObject'
+    'Find-DossierObject','Get-DossierObject','Set-DossierObject','New-DossierObject'
     'Read-DotEnv'
 )
 
