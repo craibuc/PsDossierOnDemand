@@ -44,7 +44,7 @@ function New-DossierSession {
         password = $Credential.Password | ConvertFrom-SecureString -AsPlainText
     }
 
-    $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/x-www-form-urlencoded'
+    $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/x-www-form-urlencoded' -Verbose:$false
 
     if ($Response.Content) {
         $Response.Content | ConvertFrom-Json
