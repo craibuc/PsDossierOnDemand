@@ -15,16 +15,15 @@ $Credential = [pscredential]::new($Env:DOSSIER_USERNAME,($Env:DOSSIER_PASSWORD|C
 
 $Token = New-DossierSession -Environment Staging -ClientId $Env:DOSSIER_CLIENT_ID -ClientSecret $Env:DOSSIER_CLIENT_SECRET -Credential $Credential
 
-$filter = $null
-$filterCondition = [FilterCondition]::new("referencedEntityId",'eq','942')
-$filter = [Filter]::new("and", $filterCondition)
+$operation = [Operation]::new(
+    1, 100, 
+    [Filter]::new(
+        "and",
+        [FilterCondition]::new("referencedEntityId",'eq','946')
+    ),
+    [OrderBy]::new("name", "asc"), 
+    [Expand]::new('ContactInfoSubType.ContactInfoType')
+)
+$operation | convertto-json -depth 10
 
-$orderBy = [OrderBy]::new("name", "asc")
-
-$expands = $null
-
-$operation = [Operation]::new(1, 100, $filter, $orderBy, $expands)
-
-Write-Debug ('$Operation: {0}' -f ($operation | convertto-json -depth 10))
-
-Find-DossierObject -AccessToken $Token.access_token -Environment Staging -Path 'ContactInfo/ContactInfos' -Operation $Operation
+Find-DossierObject -AccessToken $Token.access_token -Environment Staging -Path 'ContactInfo/ContactInfos' -Operation $Operation 
