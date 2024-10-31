@@ -1,6 +1,6 @@
 function Set-DossierObject {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory)]
         [string]$AccessToken,
@@ -11,6 +11,9 @@ function Set-DossierObject {
         
         [Parameter(Mandatory)]
         [string]$Path,
+
+        [Parameter(Mandatory)]
+        [int]$Id,
 
         [Parameter(Mandatory,ValueFromPipeline)]
         [object]$Data
@@ -28,14 +31,22 @@ function Set-DossierObject {
     
     process {
 
+        Write-Verbose "Set-DossierObject($Path/$Id)"
+
         $Body = $Data | ConvertTo-Json -Depth 5
 
-        $Uri = '{0}/{1}/{2}/Update' -f $BaseId, $Path, $Data.assetID
+        $Uri = '{0}/{1}/{2}/Update' -f $BaseId, $Path, $Id
 
-        $Response = Invoke-WebRequest -Method Put -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json'
-        if ($Response.Content) {
-            $Response.Content | ConvertFrom-Json
+        if ($PSCmdlet.ShouldProcess("$Path/$Id/Update", "PUT")) {
+
+            $Response = Invoke-WebRequest -Method Put -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json' -Verbose:$false
+
+            if ($Response.Content) {
+                $Response.Content | ConvertFrom-Json
+            }
+
         }
+
     }
     
     end {}
