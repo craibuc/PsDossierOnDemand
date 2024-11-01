@@ -31,7 +31,7 @@ function Set-DossierObject {
     
     process {
 
-        Write-Verbose "Set-DossierObject($Path/$Id)"
+        Write-Debug "Set-DossierObject($Path/$Id)"
 
         $Body = $Data | ConvertTo-Json -Depth 5
 

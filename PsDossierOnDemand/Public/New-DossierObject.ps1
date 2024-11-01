@@ -30,7 +30,7 @@ function New-DossierObject {
     
     process {
 
-        Write-Verbose "New-DossierObject($Path)"
+        Write-Debug "New-DossierObject($Path)"
 
         $Body = $Data | ConvertTo-Json -Depth 5
 

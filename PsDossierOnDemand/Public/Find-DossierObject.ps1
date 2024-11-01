@@ -36,7 +36,7 @@ function Find-DossierObject {
     
     process {
 
-        Write-Verbose "Find-DossierObject($Path)"
+        Write-Debug "Find-DossierObject($Path)"
 
         $Uri = if ($Operation) {
             # Write-Debug ($Operation | ConvertTo-Json -Depth 5)

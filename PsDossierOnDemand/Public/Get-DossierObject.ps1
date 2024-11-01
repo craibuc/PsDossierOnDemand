@@ -25,7 +25,7 @@ function Get-DossierObject {
     
     process {
 
-        Write-Verbose "Get-DossierObject($Path/$Id)"
+        Write-Debug "Get-DossierObject($Path/$Id)"
 
         $Uri = '{0}/{1}/{2}' -f $BaseId, $Path, $Id
 
