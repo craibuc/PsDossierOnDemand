@@ -15,19 +15,15 @@ $Credential = [pscredential]::new($Env:DOSSIER_USERNAME,($Env:DOSSIER_PASSWORD|C
 
 $Token = New-DossierSession -Environment Staging -ClientId $Env:DOSSIER_CLIENT_ID -ClientSecret $Env:DOSSIER_CLIENT_SECRET -Credential $Credential
 
-$filterCondition = [FilterCondition]::new("vendorStoreIdentifier",'eq','NO10025')
-$filter = [Filter]::new("and", $filterCondition)
+$operation = [Operation]::new(
+    1, 10, 
+    [Filter]::new(
+        "and",
+        [FilterCondition]::new("vendorStoreIdentifier",'eq','NO10025')
+    ),
+    [OrderBy]::new("name", "asc"), 
+    ( [Expand]::new('Disposition',[Expand]::new('Status')), [Expand]::new('Vendor',[Expand]::new('Disposition')) )
+)
+$operation | convertto-json -depth 10
 
-# useful when multiple records are returned
-$orderBy = $null
-# $orderBy = [OrderBy]::new("name", "asc")
-
-# include details of referenced objects
-$expands = [Expand]::new('Disposition',[Expand]::new('Status')), [Expand]::new('Vendor',[Expand]::new('Disposition'))
-
-$operation = [Operation]::new(1, 10, $filter, $orderBy, $expands)
-
-Write-Debug ('$Operation: {0}' -f ($operation | convertto-json -depth 10))
-
-$VendorStore = Find-DossierObject -AccessToken $Token.access_token -Environment Staging -Path 'Procurement/VendorStores' -Operation $Operation #| 
-$VendorStore
+Find-DossierObject -AccessToken $Token.access_token -Environment Staging -Path 'Procurement/VendorStores' -Operation $Operation
