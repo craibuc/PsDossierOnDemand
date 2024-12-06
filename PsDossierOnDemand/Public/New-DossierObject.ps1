@@ -13,7 +13,9 @@ function New-DossierObject {
         [string]$Path,
 
         [Parameter(Mandatory,ValueFromPipeline)]
-        [object]$Data
+        [object]$Data,
+
+        [string]$Verb = 'Create'
     )
     
     begin {
@@ -24,7 +26,7 @@ function New-DossierObject {
         }
 
         $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
-        $Uri = '{0}/{1}/Create' -f $BaseId, $Path
+        $Uri = '{0}/{1}/{2}' -f $BaseId, $Path, $Verb
         Write-Debug "Uri: $Uri"
     }
     
