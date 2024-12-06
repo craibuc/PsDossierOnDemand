@@ -40,9 +40,9 @@ function Find-DossierObject {
 
         $Uri = if ($Operation) {
             # Write-Debug ($Operation | ConvertTo-Json -Depth 5)
-            $O = $Operation | ConvertTo-Json -Depth 5 | ConvertTo-Base64
+            $O = $Operation | ConvertTo-Json -Depth 10 | ConvertTo-Base64
 
-            '{0}/{1}/{2}?operation={3}' -f $BaseId, $Path, $Id, $O
+            '{0}/{1}?operation={2}' -f $BaseId, $Path, $O
         }
         else {
             '{0}/{1}' -f $BaseId, $Path
