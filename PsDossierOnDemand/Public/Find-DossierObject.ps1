@@ -12,31 +12,62 @@ function Find-DossierObject {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
-        [string]$AccessToken,
+        [Parameter(Mandatory,ParameterSetName='Current')]
+        [object]$Token,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory,ParameterSetName='Deprecated')]
         [ValidateSet('Staging','Production')]
         [string]$Environment,
+
+        [Parameter(Mandatory,ParameterSetName='Deprecated')]
+        [string]$AccessToken,
 
         [Parameter(Mandatory)]
         [string]$Path,
 
         [Operation]$Operation
+
+        # [int]$Page=1,
+        # [ValidateRange(1, 1000)]
+        # [int]$Amount=100,
+        # [Filter]$Filter,
+        # [OrderBy[]]$OrderBy,
+        # [Expand[]]$Expands
+
     )
     
     begin {
-        $Headers = @{
-            Authorization = "Bearer $AccessToken"
-            Accept = 'application/json'
+
+        switch ($PSCmdlet.ParameterSetName) {
+            'Current' {
+                $Headers = @{
+                    Authorization = "Bearer {0}" -f $Token.access_token
+                    Accept = 'application/json'
+                }
+        
+                $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Token.environment -eq 'Staging' ? 'stage.' : '')
+                break
+            }
+            'Deprecated' {
+                $Headers = @{
+                    Authorization = "Bearer $AccessToken"
+                    Accept = 'application/json'
+                }
+        
+                $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
+                break
+            }
         }
-        $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
-        Write-Debug "BaseId: $BaseId"
+
     }
     
     process {
 
         Write-Debug "Find-DossierObject($Path)"
+
+        # $Operation2 = [Operation]::new(
+        #     $Page, $Amount, $Filter, $OrderBy, $Expands
+        # )
 
         $Uri = if ($Operation) {
             # Write-Debug ($Operation | ConvertTo-Json -Depth 5)
