@@ -47,7 +47,9 @@ function New-DossierSession {
     $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/x-www-form-urlencoded' -Verbose:$false
 
     if ($Response.Content) {
-        $Response.Content | ConvertFrom-Json
+        $Content = $Response.Content | ConvertFrom-Json
+        $Content | Add-Member -MemberType NoteProperty -Name 'environment' -Value $Environment
+        $Content
     }
 
 }
