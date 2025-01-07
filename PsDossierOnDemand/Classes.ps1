@@ -14,7 +14,12 @@ class FilterCondition {
 class Filter {
     [ValidateSet('and','or')]
     [string]$Logic
-    [FilterCondition[]]$Filters
+    [object[]]$Filters
+
+    Filter([string]$logic, [Filter[]]$filters) {
+        $this.Logic = $logic
+        $this.Filters = $filters
+    }
 
     Filter([string]$logic, [FilterCondition[]]$filters) {
         $this.Logic = $logic
