@@ -54,15 +54,18 @@ function Set-DossierObject {
         Write-Debug "Set-DossierObject($Path/$Id)"
 
         $Body = $Data | ConvertTo-Json -Depth 5
+        Write-Debug "Body: $Body"
 
         $Uri = '{0}/{1}/{2}/{3}' -f $BaseId, $Path, $Id, $Verb
 
         if ($PSCmdlet.ShouldProcess("$Path/$Id/$Verb", "PUT")) {
 
-            $Response = Invoke-WebRequest -Method Put -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json' -Verbose:$false
-
-            if ($Response.Content) {
-                $Response.Content | ConvertFrom-Json
+            try {
+                $Response = Invoke-WebRequest -Method Put -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json' -Verbose:$false
+                if ($Response.Content) { $Response.Content | ConvertFrom-Json }
+            }
+            catch {
+                throw ( $_.ErrorDetails.Message | ConvertFrom-Json ).developerMessage
             }
 
         }

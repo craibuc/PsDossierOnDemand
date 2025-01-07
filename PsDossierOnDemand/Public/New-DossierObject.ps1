@@ -55,14 +55,19 @@ function New-DossierObject {
 
         Write-Debug "New-DossierObject($Path)"
 
-        $Body = $Data | ConvertTo-Json -Depth 5
+        # preserve array if present
+        $Body = ConvertTo-Json $Data -Depth 5
+        Write-Debug "Body: $Body"
 
         if ($PSCmdlet.ShouldProcess("$Path/$Verb", "POST")) {
 
-            $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json' -Verbose:$false
-
-            if ($Response.Content) {
-                $Response.Content | ConvertFrom-Json
+            try {
+                $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/json' -Verbose:$false
+                if ($Response.Content) { $Response.Content | ConvertFrom-Json }
+            }
+            catch {
+                $Message = ( $_.ErrorDetails.Message | ConvertFrom-Json )
+                throw ($Message.developerMessage ? $Message.developerMessage : $Message.friendlyMessage)
             }
 
         }

@@ -44,12 +44,19 @@ function New-DossierSession {
         password = $Credential.Password | ConvertFrom-SecureString -AsPlainText
     }
 
-    $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/x-www-form-urlencoded' -Verbose:$false
+    try {
 
-    if ($Response.Content) {
-        $Content = $Response.Content | ConvertFrom-Json
-        $Content | Add-Member -MemberType NoteProperty -Name 'environment' -Value $Environment
-        $Content
+        $Response = Invoke-WebRequest -Method Post -Uri $Uri -Headers $Headers -Body $Body -ContentType 'application/x-www-form-urlencoded' -Verbose:$false
+
+        if ($Response.Content) {
+            $Content = $Response.Content | ConvertFrom-Json
+            $Content | Add-Member -MemberType NoteProperty -Name 'environment' -Value $Environment
+            $Content
+        }
+            
+    }
+    catch {
+        throw ( $_.ErrorDetails.Message | ConvertFrom-Json ).error_description
     }
 
 }

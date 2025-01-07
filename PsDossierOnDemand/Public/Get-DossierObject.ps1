@@ -59,10 +59,12 @@ function Get-DossierObject {
             '{0}/{1}/{2}' -f $BaseId, $Path, $Id
         }
 
-        $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers -Verbose:$false
-
-        if ($Response.Content) {
-            $Response.Content | ConvertFrom-Json
+        try {
+            $Response = Invoke-WebRequest -Method Get -Uri $Uri -Headers $Headers -Verbose:$false
+            if ($Response.Content) { $Response.Content | ConvertFrom-Json }
+        }
+        catch {
+            throw ( $_.ErrorDetails.Message | ConvertFrom-Json ).developerMessage
         }
     }
     
