@@ -4,13 +4,6 @@ function Set-DossierObject {
     param (
         [Parameter(Mandatory,ParameterSetName='Current')]
         [object]$Token,
-
-        [Parameter(Mandatory,ParameterSetName='Deprecated')]
-        [ValidateSet('Staging','Production')]
-        [string]$Environment,
-
-        [Parameter(Mandatory,ParameterSetName='Deprecated')]
-        [string]$AccessToken,
         
         [Parameter(Mandatory)]
         [string]$Path,
@@ -26,26 +19,12 @@ function Set-DossierObject {
     
     begin {
 
-        switch ($PSCmdlet.ParameterSetName) {
-            'Current' {
-                $Headers = @{
-                    Authorization = "Bearer {0}" -f $Token.access_token
-                    Accept = 'application/json'
-                }
-        
-                $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Token.environment -eq 'Staging' ? 'stage.' : '')
-                break
-            }
-            'Deprecated' {
-                $Headers = @{
-                    Authorization = "Bearer $AccessToken"
-                    Accept = 'application/json'
-                }
-        
-                $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Environment -eq 'Staging' ? 'stage.' : '')
-                break
-            }
+        $Headers = @{
+            Authorization = "Bearer {0}" -f $Token.access_token
+            Accept = 'application/json'
         }
+
+        $BaseId = "https://{0}d7.dossierondemand.com/api" -f ( $Token.environment -eq 'Staging' ? 'stage.' : '')
 
     }
     
