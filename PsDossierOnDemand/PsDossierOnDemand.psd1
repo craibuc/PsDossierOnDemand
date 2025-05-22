@@ -12,7 +12,7 @@
 RootModule = 'PsDossierOnDemand.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.3.0'
+ModuleVersion = '0.4.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -30,7 +30,7 @@ CompanyName = 'Cogniza, Inc.'
 Copyright = '(c) Cogniza, Inc.. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = "PowerShell wrapper for ACMS' DossierOnDemand REST API."
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -72,7 +72,7 @@ ScriptsToProcess = @('Classes.ps1')
 FunctionsToExport = @(
     'ConvertTo-Base64','ConvertFrom-Base64','ConvertTo-DossierVmrsFilter'
     'New-DossierSession'
-    'Find-DossierObject','Get-DossierObject','Remove-DossierObject','Set-DossierObject','New-DossierObject'
+    'Find-DossierObject','Get-DossierObject','Remove-DossierObject','Set-DossierObject','New-DossierObject','Find-DossierObjectAll'
     'Read-DotEnv'
 )
 
